@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import requests
 from bs4 import BeautifulSoup
-import re
 from decimal import Decimal
 import dateutil.parser
+import re
+import requests
 
 URL = 'http://www.seqwater.com.au/water-supply/dam-levels'
 
