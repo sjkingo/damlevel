@@ -78,15 +78,38 @@ def parse_all_dams(html):
     return all_dams
 
 def main():
-    html = requests.get(URL).text
-    d = parse_all_dams(html)
-
     import sys
-    if len(sys.argv) == 2:
-        d = d[sys.argv[1]]
 
-    from pprint import pprint
-    pprint(d)
+    html = requests.get(URL).text
+    all_dams = parse_all_dams(html)
+
+    try:
+        dam = all_dams[sys.argv[1]]
+    except KeyError:
+        print('Error: a valid dam name must be specified, or no argument given',
+                file=sys.stderr)
+        exit(1)
+    except IndexError:
+        from pprint import pprint
+        pprint(all_dams)
+        return
+
+    try:
+        format_str = sys.argv[2]
+    except IndexError:
+        format_str = '{name} {percent}% {pretty_comment} {updated}'
+
+    if format_str == '{all}':
+        from pprint import pprint
+        pprint(dam)
+        return
+
+    if dam['comment']:
+        pretty_comment = '(%s)' % dam['comment']
+    else:
+        pretty_comment = ''
+
+    print(format_str.format(pretty_comment=pretty_comment, **dam))
 
 
 if __name__ == '__main__':
